@@ -72,12 +72,12 @@ const Mec: React.FC<MecProps> = ({ onComplete }) => {
 
   return (
     <Box
-      sx={{
-        maxHeight: { xs: "none", md: 500 },
-        overflowY: { xs: "visible", md: "auto" },
-        padding: { xs: 2, md: 4 },
-      }}
-    >
+    sx={{
+      maxHeight: { xs: "none", md: 500 },
+      overflowY: { xs: "visible", md: "auto" },
+      padding: { xs: 2, md: 0 },
+    }}
+  >
       <Typography
         variant="h6"
         gutterBottom
@@ -85,11 +85,13 @@ const Mec: React.FC<MecProps> = ({ onComplete }) => {
           color: "#FF0000",
           fontWeight: "bold",
           textAlign: "left",
-          fontSize: { xs: 24, md: 30 },
+          fontSize: 30,
         }}
       >
         Experiências MEC
       </Typography>
+      
+
 
       <FormControl component="fieldset" sx={{ mt: 2 }}>
         <Typography variant="body1" sx={{ color: '#000', mt: 2 }}>Você possui certificado registrado pelo MEC na área de atuação?</Typography>

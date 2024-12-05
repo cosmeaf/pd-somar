@@ -17,6 +17,7 @@ const ConfirmationPage: React.FC = () => {
   const { candidato } = useDataContext();
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [vagaTitle, setVagaTitle] = useState<string>("");
+  const [schoolUnits, setSchoolUnits] = useState<{ id: string; name: string }[]>([]);
 
   useEffect(() => {
     const fetchJobPositions = async () => {
@@ -32,8 +33,29 @@ const ConfirmationPage: React.FC = () => {
         }
       }
     };
+
+    const fetchSchoolUnits = async () => {
+      try {
+        const API_URL = import.meta.env.VITE_API_URL as string;
+        const response = await axios.get(`${API_URL}/school-units/`);
+        if (Array.isArray(response.data)) {
+          setSchoolUnits(response.data);
+        } else {
+          throw new Error("Unexpected response format");
+        }
+      } catch (err: any) {
+        console.error(err.message || "Failed to fetch school units");
+      }
+    };
+
     fetchJobPositions();
+    fetchSchoolUnits();
   }, [candidato.job_applications]);
+
+  const getSchoolUnitName = (id: number) => {
+    const unit = schoolUnits.find((unit) => parseFloat(unit.id) === id);
+    return unit ? unit.name : id;
+  };
 
   if (!candidato?.full_name) {
     window.location.href = './';
@@ -117,12 +139,12 @@ const ConfirmationPage: React.FC = () => {
                   
                   {application.school_units && application.school_units.length > 0 && (
                     <Typography variant="body1" sx={{ color: "#555" }}>
-                      Unidades Escolares: {application.school_units.join(", ")}
+                      Unidades Escolares: {application.school_units.map((id) => getSchoolUnitName(id)).join(", ")}
                     </Typography>
                   )}
                   {application.work_shifts && application.work_shifts.length > 0 && (
                     <Typography variant="body1" sx={{ color: "#555" }}>
-                      Turnos de Trabalho: {application.work_shifts.join(", ")}
+                      Turnos de Trabalho: {application.work_shifts.map(shift => shift === 'morning' ? 'Manhã' : shift === 'afternoon' ? 'Tarde' : shift === 'night' ? 'Noite' : shift).join(", ")}
                     </Typography>
                   )}
                 </Box>
@@ -195,9 +217,12 @@ const ConfirmationPage: React.FC = () => {
                 candidato.training ? { label: "Nível de Formação", value: candidato.training } : null,
                 candidato.pos_stricto_mestrado ? { label: "Pós Stricto Mestrado", value: candidato.pos_stricto_mestrado } : null,
                 candidato.pos_stricto_doutorado ? { label: "Pós Stricto Doutorado", value: candidato.pos_stricto_doutorado } : null,
-                candidato.id_doc ? { label: "ID Documento", value: candidato.id_doc } : null,
+                candidato.id_doc ? { label: "Documento de identificação", value: candidato.id_doc } : null,
+                candidato.degree_doc ? { label: "Documento de Graduação", value: candidato.degree_doc.name } : null,
+                candidato.technological_level ? { label: "Nível Tecnológico", value: ((shift: string) => shift === 'muito_baixo' ? 'Muito Baixo' : shift === 'baixo' ? 'Baixo' : shift === 'medio' ? 'Médio' : shift === 'alto' ? 'Alto' : shift === 'muito_alto' ? 'Muito Alto' : shift)(candidato.technological_level) } : null,
+                candidato.classes_per_week ? { label: "Aulas por Semana", value: candidato.classes_per_week } : null,
                 { label: "Formação Contínua", value: candidato.continuous_training ? "Sim" : "Não" },
-                candidato.continuous_training_doc ? { label: "Documento Formação Contínua", value: candidato.continuous_training_doc } : null,
+                candidato.continuous_training_doc ? { label: "Documento Formação Contínua", value: candidato.continuous_training_doc.name } : null,
               ].filter(info => info !== null).map((info, index) => (
                 <Typography key={index} variant="body1" sx={{ color: "#555" }}>
                   {info.label}: {info.value instanceof File ? info.value.name : info.value}

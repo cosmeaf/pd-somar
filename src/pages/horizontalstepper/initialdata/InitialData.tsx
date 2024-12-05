@@ -209,11 +209,12 @@ const InitialData: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
 
   return (
     <Box
-      sx={{
-        maxHeight: { xs: "none", md: 500 },
-        overflowY: { xs: "visible", md: "auto" },
-      }}
-    >
+    sx={{
+      maxHeight: { xs: "none", md: 500 },
+      overflowY: { xs: "visible", md: "auto" },
+      padding: { xs: 2, md: 0 },
+    }}
+  >
       <Typography
         variant="h6"
         gutterBottom
@@ -259,7 +260,7 @@ const InitialData: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
       />
       <TextField
         fullWidth
-        label="CPF"
+        label="CPF (formato: 999.999.999-99)"
         name="cpf"
         value={formData.cpf}
         onChange={handleChange}
@@ -287,7 +288,7 @@ const InitialData: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
       />
       <TextField
         fullWidth
-        label="Telefone"
+        label="Telefone (formato: (99) 99999-9999)"
         name="phone"
         value={formData.phone}
         onChange={handleChange}
@@ -301,7 +302,7 @@ const InitialData: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
       />
       <TextField
         fullWidth
-        label="Data de Nascimento"
+        label="Data de Nascimento (formato: DD/MM/AAAA)"
         name="birth_date"
         value={formData.birth_date}
         onChange={handleChange}

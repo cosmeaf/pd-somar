@@ -54,7 +54,7 @@ const Address: React.FC<AddressProps> = ({ onComplete }) => {
         });
     }
   };
- 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setAddress((prev) => ({ ...prev, [name]: value }));
@@ -76,12 +76,13 @@ const Address: React.FC<AddressProps> = ({ onComplete }) => {
 
   return (
     <>
-      <Box
-        sx={{
-          maxHeight: { xs: "none", md: 500 },
-          overflowY: { xs: "visible", md: "auto" },
-        }}
-      >
+     <Box
+    sx={{
+      maxHeight: { xs: "none", md: 500 },
+      overflowY: { xs: "visible", md: "auto" },
+      padding: { xs: 2, md: 0 },
+    }}
+  >
         <Typography
           variant="h6"
           gutterBottom

@@ -12,9 +12,13 @@ interface Candidato {
   birth_date: string;
   id_doc: File | null;
   state_school_experience: string;
+  state_school_experience_ratio: string;
   private_school_experience: string;
+  private_school_experience_ratio: string;
   high_school_experience: string;
+  high_school_experience_ratio: string;
   elementary_school_experience: string;
+  elementary_school_experience_ratio: string;
   training_area: string;
   training_extra_courses: string;
   training: string;
@@ -27,6 +31,9 @@ interface Candidato {
   observations: string;
   job_applications: JobApplication[];
   address: Address;
+  degree_doc: File | null;
+  technological_level: string;
+  classes_per_week: string;
 }
 
 interface JobApplication {
@@ -74,9 +81,13 @@ const defaultCandidate: Candidato = {
   birth_date: "",
   id_doc: null,
   state_school_experience: "",
+  state_school_experience_ratio: "",
   private_school_experience: "",
+  private_school_experience_ratio: "",
   high_school_experience: "",
+  high_school_experience_ratio: "",
   elementary_school_experience: "",
+  elementary_school_experience_ratio: "",
   training_area: "",
   training_extra_courses: "",
   training: "",
@@ -103,6 +114,9 @@ const defaultCandidate: Candidato = {
     complement: "",
     neighborhood: "",
   },
+  degree_doc: null,
+  technological_level: "",
+  classes_per_week: "",
 };
 
 // Address (exemplo inicial)

@@ -89,7 +89,13 @@ const Jobs: React.FC<JobsProps> = ({ onComplete }) => {
   if (error) return <Typography color="error">Error: {error}</Typography>;
 
   return (
-    <Box>
+    <Box
+    sx={{
+      maxHeight: { xs: "none", md: 500 },
+      overflowY: { xs: "visible", md: "auto" },
+      padding: { xs: 2, md: 0 },
+    }}
+  >
       <Typography
         variant="h6"
         gutterBottom
@@ -127,6 +133,8 @@ const Jobs: React.FC<JobsProps> = ({ onComplete }) => {
               key={job.id}
               value={job.id}
               onClick={() => handleCheckboxChange(job.id)}
+              sx={{ '@media (max-width:600px)': { fontSize: 14 }, textWrap: "wrap"  }}
+
             >
               <Checkbox
                 checked={selectedJobs.includes(job.id)}

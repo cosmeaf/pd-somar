@@ -186,11 +186,12 @@ const JobsItem: React.FC<JobsItemProps> = ({
 
   return (
     <Box
-      sx={{
-        maxHeight: { xs: "none", md: 500 },
-        overflowY: { xs: "visible", md: "auto" },
-      }}
-    >
+    sx={{
+      maxHeight: { xs: "none", md: 500 },
+      overflowY: { xs: "visible", md: "auto" },
+      padding: { xs: 2, md: 0 },
+    }}
+  >
       <Typography
         variant="h6"
         gutterBottom

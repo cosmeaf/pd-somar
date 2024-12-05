@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Radio, RadioGroup, FormControlLabel, FormControl, Button, LinearProgress } from "@mui/material";
+import { Box, Typography, Radio, RadioGroup, FormControlLabel, FormControl, Button, LinearProgress, TextField } from "@mui/material";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { useDataContext } from "../../../context/DataContext";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
@@ -11,24 +11,31 @@ interface FunctionalInfoProps {
 const FunctionalInfo: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
   const { candidato, updateCandidate } = useDataContext();
   const [hasExperience, setHasExperience] = useState<string>(candidato.continuous_training ? "sim" : "nao");
-  const [, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState<File | null | undefined>(candidato.continuous_training_doc ? candidato.continuous_training_doc : null);
   const [uploading, setUploading] = useState(false);
   const [observations, setObservations] = useState<string>(candidato.observations || "");
+  const [technologicalLevel, setTechnologicalLevel] = useState<string>(candidato.technological_level || "");
+  const [classesPerWeek, setClassesPerWeek] = useState<string>(candidato.classes_per_week || "");
 
   useEffect(() => {
     updateCandidate({
       continuous_training: hasExperience === "sim",
       continuous_training_doc: fileName ? fileName : undefined,
       observations,
+      technological_level: technologicalLevel,
+      classes_per_week: classesPerWeek,
     });
 
-    onComplete(hasExperience === "nao" || (hasExperience === "sim" && !!fileName));
-  }, [hasExperience, fileName, observations, updateCandidate, onComplete]);
+    onComplete(
+      (technologicalLevel !== "" && classesPerWeek !== "") &&
+      hasExperience === "nao" ||
+      (hasExperience === "sim" && !!fileName) 
+ 
+    );
+  }, [hasExperience, fileName, observations, technologicalLevel, classesPerWeek, updateCandidate, onComplete]);
 
   const handleExperienceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHasExperience(event.target.value);
-    setFile(null);
     setFileName(undefined);
   };
 
@@ -43,18 +50,33 @@ const FunctionalInfo: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
       // Simulate upload delay
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setUploading(false);
-      setFile(selectedFile);
       setFileName(selectedFile);
     }
   };
 
   const handleRemoveFile = () => {
-    setFile(null);
     setFileName(undefined);
   };
 
+  const handleTechnologicalLevelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTechnologicalLevel(event.target.value);
+  };
+
+  const handleClassesPerWeekChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    if (/^[0-9]*$/.test(value)) {
+      setClassesPerWeek(value);
+    }
+  };
+
   return (
-    <Box>
+    <Box
+      sx={{
+        maxHeight: { xs: "none", md: 500 },
+        overflowY: { xs: "visible", md: "auto" },
+        padding: { xs: 2, md: 0 },
+      }}
+    >
       <Typography
         variant="h6"
         gutterBottom
@@ -115,7 +137,7 @@ const FunctionalInfo: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
               </Button>
               <Box display={"flex"} gap={1}>
                 <Typography variant="body2" sx={{ mb: 2, fontWeight: "bold", color: "#FF7F00" }}>Arquivo enviado:</Typography>
-                <Typography variant="body2">{fileName.name}</Typography>
+                <Typography variant="body2" sx={{ mb: 2, wordWrap: "break-word", maxWidth: 300 }}>{fileName.name}</Typography>
               </Box>
             </Box>
           ) : (
@@ -146,6 +168,40 @@ const FunctionalInfo: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
         </Box>
       )}
 
+      <Box mt={4}>
+        <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+          Nível tecnológico
+        </Typography>
+        <FormControl component="fieldset" sx={{ mt: 2 }}>
+          <RadioGroup
+            aria-label="nivel_tecnologico"
+            name="technological_level"
+            value={technologicalLevel}
+            onChange={handleTechnologicalLevelChange}
+          >
+            <FormControlLabel value="muito_baixo" control={<Radio sx={{ color: "#FF7F00", '&.Mui-checked': { color: '#FF7F00' } }} />} label="Muito Baixo" />
+            <FormControlLabel value="baixo" control={<Radio sx={{ color: "#FF7F00", '&.Mui-checked': { color: '#FF7F00' } }} />} label="Baixo" />
+            <FormControlLabel value="medio" control={<Radio sx={{ color: "#FF7F00", '&.Mui-checked': { color: '#FF7F00' } }} />} label="Médio" />
+            <FormControlLabel value="alto" control={<Radio sx={{ color: "#FF7F00", '&.Mui-checked': { color: '#FF7F00' } }} />} label="Alto" />
+            <FormControlLabel value="muito_alto" control={<Radio sx={{ color: "#FF7F00", '&.Mui-checked': { color: '#FF7F00' } }} />} label="Muito Alto" />
+          </RadioGroup>
+        </FormControl>
+      </Box>
+
+      <Box mt={4}>
+        <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+          Quantas aulas por semana você tem disponibilidade durante a semana?
+        </Typography>
+        <TextField
+          type="text"
+          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+          name="classes_per_week"
+          value={classesPerWeek}
+          onChange={handleClassesPerWeekChange}
+          fullWidth
+          margin="dense"
+        />
+      </Box>
       <Box mt={4}>
         <Typography variant="body1" sx={{ fontWeight: "bold" }}>
           Observações (opcional)

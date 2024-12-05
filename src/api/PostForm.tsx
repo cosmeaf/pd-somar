@@ -73,13 +73,15 @@ const PostForm: React.FC = () => {
       formData.append("continuous_training", String(candidato.continuous_training));
       formData.append("observations", candidato.observations || "");
       formData.append("address", String(addressId));
-      formData.append("state_school_experience", candidato.state_school_experience);
-      formData.append("private_school_experience", candidato.private_school_experience);
-      formData.append("high_school_experience", candidato.high_school_experience);
-      formData.append("elementary_school_experience", candidato.elementary_school_experience);
+      formData.append("state_school_experience", candidato.state_school_experience_ratio + " ;; " + candidato.state_school_experience);
+      formData.append("private_school_experience", candidato.private_school_experience_ratio + " ;; " + candidato.private_school_experience);
+      formData.append("high_school_experience", candidato.high_school_experience_ratio + " ;; " + candidato.high_school_experience);
+      formData.append("elementary_school_experience", candidato.elementary_school_experience_ratio + " ;; " + candidato.elementary_school_experience);
       formData.append("training_area", candidato.training_area);
       formData.append("training_extra_courses", candidato.training_extra_courses);
       formData.append("training", candidato.training);
+      formData.append("classes_per_week", candidato.classes_per_week);
+      formData.append("technological_level", candidato.technological_level);
 
       if (candidato.id_doc instanceof File) {
         formData.append("id_doc", candidato.id_doc, candidato.id_doc.name);
@@ -111,6 +113,9 @@ const PostForm: React.FC = () => {
           candidato.pos_stricto_doutorado,
           candidato.pos_stricto_doutorado.name
         );
+      }
+      if (candidato.degree_doc instanceof File) {
+        formData.append("degree_doc", candidato.degree_doc, candidato.degree_doc.name);
       }
 
       const candidateResponse = await axios.post(`${API_URL}/candidates/`, formData, {
