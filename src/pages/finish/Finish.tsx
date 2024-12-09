@@ -6,8 +6,15 @@ import {
   Typography,
 } from "@mui/material";
 import ipgc_logo from "../../assets/ipgc_logo.svg";
+import { useDataContext } from "../../context/DataContext";
 
 export default function Finish() {
+  const { candidato } = useDataContext();
+
+  if (!candidato?.full_name) {
+    window.location.href = './';
+    return null;
+  }
   return (
     <>
       <CssBaseline />

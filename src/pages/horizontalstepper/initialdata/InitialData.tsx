@@ -71,7 +71,6 @@ const InitialData: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
   const [, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
   useEffect(() => {
     if (candidato) {
       setFormData((prev) => ({
@@ -100,16 +99,46 @@ const InitialData: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
     onComplete(!!isComplete);
   }, [formData, errors, onComplete]);
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  }, []);
-
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      let updatedValue = value;
+  
+      if (name === "cpf") {
+        updatedValue = value.replace(/[^\d]+/g, "").replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+      }
+  
+      if (name === "phone") {
+        updatedValue = value.replace(/[^\d]+/g, "").replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+      }
+  
+      if (name === "birth_date") {
+        const formattedDate = value.replace(/[^\d]/g, "");
+        if (formattedDate.length <= 8) {
+          const day = formattedDate.substring(0, 2);
+          const month = formattedDate.substring(2, 4);
+          const year = formattedDate.substring(4);
+          updatedValue = `${day}${month ? '/' + month : ''}${year ? '/' + year : ''}`;
+        }
+      }
+  
+      setFormData((prev) => ({ ...prev, [name]: updatedValue }));
+    },
+    []
+  );
   const handleBlur = useCallback(
     async (e: React.FocusEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
       let error = "";
       let updatedValue = value;
+  
+      // Caso o valor seja limpo
+      if (value.trim() === "") {
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+        setFormData((prev) => ({ ...prev, [name]: "" }));
+        updateCandidate({ [name]: "" });
+        return;
+      }
   
       if (name === "cpf") {
         const formattedCPF = value.replace(/[^\d]+/g, "");
@@ -129,7 +158,7 @@ const InitialData: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
               );
             }
           } catch (err: any) {
-           
+            // Tratar erro da API
           }
         }
       }
@@ -170,9 +199,16 @@ const InitialData: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
       }
   
       if (name === "email") {
-        if (!validateEmail(value)) {
+        const trimmedEmail = value.trim();
+        if (!validateEmail(trimmedEmail)) {
           error = "Email inválido. Verifique o formato.";
+        } else {
+          updatedValue = trimmedEmail.toLowerCase();
         }
+      }
+  
+      if (name === "full_name") {
+        updatedValue = value.trim().replace(/\s+/g, " ").toUpperCase();
       }
   
       setErrors((prev) => ({ ...prev, [name]: error }));
@@ -183,6 +219,8 @@ const InitialData: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
     },
     [updateCandidate]
   );
+ 
+
   
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

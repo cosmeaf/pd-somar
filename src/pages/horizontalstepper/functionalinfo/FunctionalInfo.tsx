@@ -29,7 +29,7 @@ const FunctionalInfo: React.FC<FunctionalInfoProps> = ({ onComplete }) => {
     onComplete(
       (technologicalLevel !== "" && classesPerWeek !== "") &&
       hasExperience === "nao" ||
-      (hasExperience === "sim" && !!fileName) 
+      (technologicalLevel !== "" && classesPerWeek !== "") && (hasExperience === "sim" && !!fileName) 
  
     );
   }, [hasExperience, fileName, observations, technologicalLevel, classesPerWeek, updateCandidate, onComplete]);
